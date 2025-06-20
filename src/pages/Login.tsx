@@ -41,7 +41,7 @@ const Login: React.FC = () => {
         "Login failed";
       if (result.success && result.data?.accessToken) {
         setToken(result.data.accessToken);
-        navigate("/users");
+        navigate("/products");
       } else {
         setToast(errorMsg);
       }
