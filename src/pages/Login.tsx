@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { setToken } from "../services/tokenService";
 import type { LoginDto } from "../dtos/LoginDto";
 import reactLogo from "../assets/react.svg";
-
+ 
 type LoginFormInputs = {
   email: string;
   password: string;
 };
-
+ 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>({ mode: "onBlur" });
-
+ 
   const [toast, setToast] = useState<string | null>(null);
-
+ 
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => setToast(null), 3000);
       return () => clearTimeout(timer);
     }
   }, [toast]);
-
+ 
   const onSubmit = async (data: LoginFormInputs) => {
     const dto: LoginDto = {
       userName: data.email,
@@ -38,7 +40,8 @@ const Login: React.FC = () => {
         result.message ||
         "Login failed";
       if (result.success && result.data?.accessToken) {
-        setToken(result.data.accessToken);       
+        setToken(result.data.accessToken);
+        navigate("/users");
       } else {
         setToast(errorMsg);
       }
