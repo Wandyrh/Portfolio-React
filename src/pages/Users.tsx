@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getUsersPaged, createUser } from "../services/userService";
 import type { UserDto } from "../dtos/UserDtos";
 import UserForm from "../components/UserForm";
@@ -7,6 +8,7 @@ import ConfirmModal from "../components/ConfirmModal";
 const PAGE_SIZE = 5;
 
 const Users = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<UserDto[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -52,7 +54,7 @@ const Users = () => {
       const result = await createUser(data);
       setModalOpen(false);
       if (result && result.success) {
-        setToast("User created successfully");
+        setToast(t("User.userCreated"));
         fetchUsers();
       }
     } else if (formMode === "edit" && editUser) {     
@@ -62,7 +64,7 @@ const Users = () => {
       const result = await updateUser(editUser.id, updateData);
       setModalOpen(false);
       if (result && result.success) {
-        setToast("User updated successfully");
+        setToast(t("User.userUpdated"));
         fetchUsers();
       }
     }
@@ -92,14 +94,14 @@ const Users = () => {
       )}
       <ConfirmModal
         open={deleteModalOpen}
-        title="Delete User"
+        title={t("User.deleteUserTitle")}
         message={
           userToDelete
-            ? `Are you sure you want to delete ${userToDelete.firstName} ${userToDelete.lastName}?`
+            ? t("User.deleteUserMessage", { name: `${userToDelete.firstName} ${userToDelete.lastName}` })
             : ""
         }
-        confirmText="Delete"
-        cancelText="Cancel"
+        confirmText={t("User.deleteUserConfirm")}
+        cancelText={t("User.deleteUserCancel")}
         onCancel={() => setDeleteModalOpen(false)}
         onConfirm={async () => {
           if (userToDelete) {
@@ -107,7 +109,7 @@ const Users = () => {
             await deleteUser(userToDelete.id);
             setDeleteModalOpen(false);
             setUserToDelete(null);
-            setToast("User deleted successfully");
+            setToast(t("User.userDeleted"));
             fetchUsers();
           }
         }}
@@ -118,7 +120,7 @@ const Users = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
           <span>
-            Users
+            {t("User.users")}
             <span className="block w-12 h-1 bg-react rounded mt-2"></span>
           </span>
         </h2>
@@ -129,7 +131,7 @@ const Users = () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add User
+          {t("User.addUser")}
         </button>
       </div>
       {modalOpen && (
@@ -149,19 +151,19 @@ const Users = () => {
           <thead>
             <tr>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left rounded-tl-lg shadow-sm">
-                First Name
+                {t("User.firstNameLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left shadow-sm">
-                Last Name
+                {t("User.lastNameLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left shadow-sm">
-                Email
+                {t("User.emailLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left shadow-sm">
-                Phone
+                {t("User.phoneLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-center rounded-tr-lg shadow-sm">
-                Actions
+                {t("General.actions")}
               </th>
             </tr>
           </thead>
@@ -169,7 +171,7 @@ const Users = () => {
             {users.length === 0 ? (
               <tr>
                 <td colSpan={4} className="py-6 px-4 text-center text-gray-400">
-                  No users found.
+                  {t("User.noUsersFound")}
                 </td>
               </tr>
             ) : (
@@ -195,7 +197,7 @@ const Users = () => {
                   <td className="py-3 px-5 border-b border-gray-100 text-center">
                     <button
                       className="inline-flex items-center justify-center p-2 rounded hover:bg-blue-50 mr-2"
-                      title="Edit"
+                      title={t("User.edit")}
                       onClick={() => handleEditUser(user)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -204,7 +206,7 @@ const Users = () => {
                     </button>
                     <button
                       className="inline-flex items-center justify-center p-2 rounded hover:bg-red-50"
-                      title="Delete"
+                      title={t("User.delete")}
                       onClick={() => {
                         setUserToDelete(user);
                         setDeleteModalOpen(true);
@@ -227,7 +229,7 @@ const Users = () => {
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
         >
-          Previous
+          {t("General.paginationPrevious")}
         </button>
         <span className="px-3 py-1">{page} / {totalPages}</span>
         <button
@@ -235,7 +237,7 @@ const Users = () => {
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
         >
-          Next
+          {t("General.paginationNext")}
         </button>
       </div>
     </div>

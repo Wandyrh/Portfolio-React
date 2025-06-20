@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CategoryForm from "../components/CategoryForm";
+import i18n from "../i18n";
 import {
   getProductCategoriesPaged,
   createProductCategory,
@@ -12,6 +14,7 @@ import ConfirmModal from "../components/ConfirmModal";
 const PAGE_SIZE = 5;
 
 const ProductCategory = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<ProductCategoryDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +37,7 @@ const ProductCategory = () => {
     } else {
       setCategories([]);
       setTotalPages(1);
-      setError(res.message || "Error fetching categories");
+      setError(res.message || t("Category.errorFetchingCategories"));
     }
     setLoading(false);
   };
@@ -71,18 +74,18 @@ const ProductCategory = () => {
       if (res.success) {
         fetchCategories();
         setShowModal(false);
-        setToast("Category updated successfully");
+        setToast(t("Category.categoryUpdated"));
       } else {
-        setError(res.message || "Error updating category");
+        setError(res.message || t("Category.errorUpdatingCategory"));
       }
     } else {
       const res = await createProductCategory(data as CreateProductCategoryDto);
       if (res.success) {
         fetchCategories();
         setShowModal(false);
-        setToast("Category created successfully");
+        setToast(t("Category.categoryCreated"));
       } else {
-        setError(res.message || "Error creating category");
+        setError(res.message || t("Category.errorCreatingCategory"));
       }
     }
     setLoading(false);
@@ -95,9 +98,9 @@ const ProductCategory = () => {
     if (res.success) {
       fetchCategories();
       setShowConfirm(false);
-      setToast("Category deleted successfully");
+      setToast(t("Category.categoryDeleted"));
     } else {
-      setError(res.message || "Error deleting category");
+      setError(res.message || t("Category.errorDeletingCategory"));
     }
     setLoading(false);
   };
@@ -124,7 +127,7 @@ const ProductCategory = () => {
             <circle cx="10" cy="11" r="2.5" stroke="currentColor" strokeWidth="2" fill="none"/>
           </svg>
           <span>
-            Product Categories
+            {t("Category.productCategories")}
             <span className="block w-12 h-1 bg-react rounded mt-2"></span>
           </span>
         </h2>
@@ -135,22 +138,22 @@ const ProductCategory = () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add Category
+          {t("Category.addCategory")}
         </button>
       </div>
       {error && <div className="text-red-500 mb-2">{error}</div>}
       {loading ? (
-        <div>Loading...</div>
+        <div>{t("Category.loading")}</div>
       ) : (
         <div className="overflow-x-auto rounded-lg shadow mb-4">
           <table className="min-w-full bg-gradient-to-br from-white via-gray-50 to-gray-100 border border-gray-200">
             <thead>
               <tr>
                 <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left rounded-tl-lg shadow-sm">
-                  Name
+                  {t("Category.nameCategoryLabel")}
                 </th>
                 <th className="py-3 px-5 border-b bg-react text-white font-semibold text-center rounded-tr-lg shadow-sm">
-                  Actions
+                  {t("Category.actionsCategory")}
                 </th>
               </tr>
             </thead>
@@ -158,7 +161,7 @@ const ProductCategory = () => {
               {categories.length === 0 ? (
                 <tr>
                   <td colSpan={2} className="py-6 px-4 text-center text-gray-400">
-                    No categories found.
+                    {t("Category.noCategoriesFound")}
                   </td>
                 </tr>
               ) : (
@@ -175,7 +178,7 @@ const ProductCategory = () => {
                     <td className="py-3 px-5 border-b border-gray-100 text-center">
                       <button
                         className="inline-flex items-center justify-center p-2 rounded hover:bg-blue-50 mr-2"
-                        title="Edit"
+                        title={t("Category.edit")}
                         onClick={() => handleOpenEdit(cat)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,7 +187,7 @@ const ProductCategory = () => {
                       </button>
                       <button
                         className="inline-flex items-center justify-center p-2 rounded hover:bg-red-50"
-                        title="Delete"
+                        title={t("Category.delete")}
                         onClick={() => { setSelected(cat); setShowConfirm(true); }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -206,7 +209,7 @@ const ProductCategory = () => {
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
         >
-          Previous
+          {t("General.paginationPrevious")}
         </button>
         <span className="px-3 py-1">{page} / {totalPages}</span>
         <button
@@ -214,12 +217,12 @@ const ProductCategory = () => {
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
         >
-          Next
+          {t("General.paginationNext")}
         </button>
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" key={i18n.language}>
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative animate-fade-in">
             <CategoryForm
               mode={editMode ? "edit" : "create"}
@@ -235,8 +238,8 @@ const ProductCategory = () => {
       {showConfirm && selected && (
         <ConfirmModal
           open={showConfirm}
-          title="Delete Category"
-          message={`Are you sure you want to delete "${selected.name}"?`}
+          title={t("Category.deleteCategoryTitle")}
+          message={t("Category.deleteCategoryMessage", { name: selected.name })}
           onCancel={() => setShowConfirm(false)}
           onConfirm={handleDelete}
         />
