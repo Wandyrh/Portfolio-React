@@ -137,7 +137,7 @@ const Products = () => {
         }}
       />
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold flex items-center gap-3 tracking-tight text-react-dark relative">
+        <h2 className="text-4xl font-extrabold flex items-center gap-3 tracking-tight text-react-dark relative">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="inline text-react">
             <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
             <rect x="7" y="3" width="10" height="4" rx="1" stroke="currentColor" strokeWidth="2" fill="none"/>
