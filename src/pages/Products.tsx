@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import {
   getProductsPaged,
@@ -14,6 +15,7 @@ import ConfirmModal from "../components/ConfirmModal";
 const PAGE_SIZE = 5;
 
 const Products = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<ProductDto[]>([]);
   const [categories, setCategories] = useState<ProductCategoryDto[]>([]);
   const [page, setPage] = useState(1);
@@ -36,12 +38,12 @@ const Products = () => {
       } else {
         setProducts([]);
         setTotalPages(1);
-        setError("No products found.");
+        setError(t("Product.noProductsFound"));
       }
     } catch (err: any) {
       setProducts([]);
       setTotalPages(1);
-      setError("Failed to load products.");
+      setError(t("Product.failedToLoadProducts"));
     }
   };
 
@@ -75,14 +77,14 @@ const Products = () => {
       const result = await createProduct(data);
       setModalOpen(false);
       if (result && result.success) {
-        setToast("Product created successfully");
+        setToast(t("Product.productCreated"));
         fetchProducts();
       }
     } else if (formMode === "edit" && editProduct) {
       const result = await updateProduct(editProduct.id, { ...data, id: editProduct.id });
       setModalOpen(false);
       if (result && result.success) {
-        setToast("Product updated successfully");
+        setToast(t("Product.productUpdated"));
         fetchProducts();
       }
     }
@@ -117,33 +119,34 @@ const Products = () => {
       )}
       <ConfirmModal
         open={deleteModalOpen}
-        title="Delete Product"
+        title={t("Product.deleteProductTitle")}
         message={
           productToDelete
-            ? `Are you sure you want to delete ${productToDelete.name}?`
+            ? t("Product.deleteProductMessage", { name: productToDelete.name })
             : ""
         }
-        confirmText="Delete"
-        cancelText="Cancel"
+        confirmText={t("Product.deleteProductConfirm")}
+        cancelText={t("Product.deleteProductCancel")}
         onCancel={() => setDeleteModalOpen(false)}
         onConfirm={async () => {
           if (productToDelete) {
             await deleteProduct(productToDelete.id);
             setDeleteModalOpen(false);
             setProductToDelete(null);
-            setToast("Product deleted successfully");
+            setToast(t("Product.productDeleted"));
             fetchProducts();
           }
         }}
       />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-4xl font-extrabold flex items-center gap-3 tracking-tight text-react-dark relative">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="inline text-react">
-            <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <rect x="7" y="3" width="10" height="4" rx="1" stroke="currentColor" strokeWidth="2" fill="none"/>
+          <svg width="28" height="28" viewBox="0 0 20 20" fill="none" className="inline text-react">
+            <polygon points="2,7 10,2 18,7 10,12" stroke="currentColor" strokeWidth="2" fill="none"/>
+            <polyline points="2,7 2,15 10,18 18,15 18,7" stroke="currentColor" strokeWidth="2" fill="none"/>
+            <line x1="10" y1="12" x2="10" y2="18" stroke="currentColor" strokeWidth="2"/>
           </svg>
           <span>
-            Products
+            {t("Product.products")}
             <span className="block w-12 h-1 bg-react rounded mt-2"></span>
           </span>
         </h2>
@@ -154,7 +157,7 @@ const Products = () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add Product
+          {t("Product.addProduct")}
         </button>
       </div>
       {modalOpen && (
@@ -175,16 +178,16 @@ const Products = () => {
           <thead>
             <tr>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left rounded-tl-lg shadow-sm">
-                Name
+                {t("Product.nameLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left shadow-sm">
-                Category
+                {t("Product.categoryLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-left shadow-sm">
-                Description
+                {t("Product.descriptionLabel")}
               </th>
               <th className="py-3 px-5 border-b bg-react text-white font-semibold text-center rounded-tr-lg shadow-sm">
-                Actions
+                {t("General.actions")}
               </th>
             </tr>
           </thead>
@@ -192,7 +195,7 @@ const Products = () => {
             {products.length === 0 && !error ? (
               <tr>
                 <td colSpan={4} className="py-6 px-4 text-center text-gray-400">
-                  No products found.
+                  {t("Product.noProductsFound")}
                 </td>
               </tr>
             ) : (
@@ -215,7 +218,7 @@ const Products = () => {
                   <td className="py-3 px-5 border-b border-gray-100 text-center">
                     <button
                       className="inline-flex items-center justify-center p-2 rounded hover:bg-blue-50 mr-2"
-                      title="Edit"
+                      title={t("Product.edit")}
                       onClick={() => handleEditProduct(product)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -224,7 +227,7 @@ const Products = () => {
                     </button>
                     <button
                       className="inline-flex items-center justify-center p-2 rounded hover:bg-red-50"
-                      title="Delete"
+                      title={t("Product.delete")}
                       onClick={() => {
                         setProductToDelete(product);
                         setDeleteModalOpen(true);
@@ -249,7 +252,7 @@ const Products = () => {
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
         >
-          Previous
+          {t("General.paginationPrevious")}
         </button>
         <span className="px-3 py-1">{page} / {totalPages}</span>
         <button
@@ -257,7 +260,7 @@ const Products = () => {
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
         >
-          Next
+          {t("General.paginationNext")}
         </button>
       </div>
     </div>

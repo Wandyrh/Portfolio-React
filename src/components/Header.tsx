@@ -2,13 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import reactLogo from "../assets/react.svg";
 import { logout } from "../services/authService";
+import LanguageSelector from "./LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
   const navigate = useNavigate();
-
-  // Close menu on click outside
+  
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -38,7 +40,9 @@ const Header = () => {
         </span>
         <h1 className="text-4xl font-normal">Portfolio-React</h1>
       </div>
-      <div className="relative" ref={menuRef}>
+      <div className="flex items-center gap-4">
+        <LanguageSelector />
+        <div className="relative" ref={menuRef}>
         <button
           className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition"
           onClick={() => setMenuOpen((v) => !v)}
@@ -55,12 +59,13 @@ const Header = () => {
               className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-xl transition"
               onClick={handleLogout}
             >
-              Log out
+              {t("General.logout")}
             </button>
           </div>
         )}
-      </div>
-    </header>
+    </div>
+    </div>
+  </header>
   );
 };
 

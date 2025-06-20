@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import type { CreateProductDto, UpdateProductDto, ProductDto } from "../dtos/ProductDtos";
 import type { ProductCategoryDto } from "../dtos/ProductCategoryDtos";
 
@@ -20,6 +21,7 @@ const ProductForm = ({
   onCancel,
   loading = false,
 }: ProductFormProps) => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -61,23 +63,23 @@ const ProductForm = ({
       className="space-y-5 w-full"
     >
       <h3 className="text-2xl font-bold mb-2 text-center text-react-dark">
-        {mode === "edit" ? "Edit Product" : "Add Product"}
+        {mode === "edit" ? t("Product.editProduct") : t("Product.addProductForm")}
       </h3>
       <div>
-        <label className="block mb-1 font-semibold">Name</label>
+        <label className="block mb-1 font-semibold">{t("Product.nameLabel")}</label>
         <input
           type="text"
           className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-react ${
             errors.name ? "border-red-500" : ""
           }`}
           {...register("name", {
-            required: "Name is required",           
+            required: t("Product.nameRequired"),
           })}
           disabled={loading}
         />
         {errors.name?.type === "required" && (
           <span className="text-red-500 text-sm mt-1 block">
-            Name is required
+            {t("Product.nameRequired")}
           </span>
         )}
         {errors.name && errors.name.type !== "required" && (
@@ -87,19 +89,19 @@ const ProductForm = ({
         )}
       </div>
       <div>
-        <label className="block mb-1 font-semibold">Description</label>
+        <label className="block mb-1 font-semibold">{t("Product.descriptionLabel")}</label>
         <textarea
           className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-react ${
             errors.description ? "border-red-500" : ""
           }`}
           {...register("description", {
-            required: "Description is required",   
+            required: t("Product.descriptionRequired"),
           })}
           disabled={loading}
         />
         {errors.description?.type === "required" && (
           <span className="text-red-500 text-sm mt-1 block">
-            Description is required
+            {t("Product.descriptionRequired")}
           </span>
         )}
         {errors.description && errors.description.type !== "required" && (
@@ -109,22 +111,22 @@ const ProductForm = ({
         )}
       </div>
       <div>
-        <label className="block mb-1 font-semibold">Category</label>
+        <label className="block mb-1 font-semibold">{t("Product.categoryLabel")}</label>
         <select
-          {...register("categoryId", { required: "Category is required" })}
+          {...register("categoryId", { required: t("Product.categoryRequired") })}
           className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-react ${
             errors.categoryId ? "border-red-500" : ""
           }`}
           disabled={loading}
         >
-          <option value="">Select category</option>
+          <option value="">{t("Product.selectCategory")}</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
         {errors.categoryId?.type === "required" && (
           <span className="text-red-500 text-sm mt-1 block">
-            Category is required
+            {t("Product.categoryRequired")}
           </span>
         )}
         {errors.categoryId && errors.categoryId.type !== "required" && (
@@ -140,14 +142,14 @@ const ProductForm = ({
           className="px-4 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-100"
           disabled={loading}
         >
-          Cancel
+          {t("General.cancel")}
         </button>
         <button
           type="submit"
           className="px-5 py-2 rounded-xl bg-react text-white font-semibold hover:bg-[#1fc8f8] transition"
           disabled={loading}
         >
-          {mode === "edit" ? "Update" : "Create"}
+          {mode === "edit" ? t("General.update") : t("General.create")}
         </button>
       </div>
     </form>
