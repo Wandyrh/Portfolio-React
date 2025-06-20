@@ -7,6 +7,13 @@ A demonstration project for the portfolio of Wandy Rodríguez. This React applic
 
 ---
 
+
+![imagen](https://github.com/user-attachments/assets/b86b8e9d-c543-4d70-bb31-5b795f0a6984)
+![imagen](https://github.com/user-attachments/assets/0f200b57-4c36-40c8-93ae-e5646f027f27)
+![imagen](https://github.com/user-attachments/assets/d39f4ef2-71d8-4dd1-83c7-e1cb5ed2df0b)
+![imagen](https://github.com/user-attachments/assets/b70fafc4-add7-4deb-911c-876f91b74289)
+
+---
 ## Technologies Used
 
 - React 19 (with Hooks and Functional Components)
